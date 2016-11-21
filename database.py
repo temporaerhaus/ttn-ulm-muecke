@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pymysql.cursors
+import config
 
 
 class Database:
@@ -7,10 +8,10 @@ class Database:
 
     def __init__(self):
         self.connection = pymysql.connect(
-            host='localhost',
-            user='muecke',
-            password='muecke',
-            db='muecke',
+            host=config.database['host'],
+            user=config.database['user'],
+            password=config.database['password'],
+            db=config.database['database'],
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor)
 
