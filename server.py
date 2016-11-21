@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 import subscriber
+import database
+import paho.mqtt.client as mqtt
+import threading
 
-subscriber = subscriber.Subscriber()
-subscriber.start()
+database = database.Database()
+applications = database.get_applications()
 
+for app in applications:
+    print('Handling app ' + app['app_eui'])
+    client = mqtt.Client()
+    sub = subscriber.Subscriber(database, app, client)
+    client.loop_start()
 
-# if __name__ == "__main__":
-#     subscriber = subscriber.Subscriber()
-#     subscriber.start()
+while True:
+    dummy_event = threading.Event()
+    dummy_event.wait()
