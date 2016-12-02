@@ -28,8 +28,8 @@ class Subscriber:
     def on_message(self, client, userdata, msg):
         print('got message')
         print(msg.topic + " " + str(msg.payload))
-
-        payload_as_json = json.loads(msg.payload)
+        
+        payload_as_json = json.loads(msg.payload.decode("utf-8"))
         payload_decoded = base64.b64decode(payload_as_json['payload'])
 
         self.database.save(
