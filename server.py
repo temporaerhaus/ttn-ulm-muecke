@@ -8,7 +8,7 @@ database = database.Database()
 applications = database.get_applications()
 
 for app in applications:
-    print('Handling app ' + app['app_eui'])
+    print('Handling app ' + app['app_id'])
     client = mqtt.Client()
     sub = subscriber.Subscriber(database, app, client)
     client.loop_start()
