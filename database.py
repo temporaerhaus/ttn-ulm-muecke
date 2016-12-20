@@ -33,7 +33,7 @@ class Database:
                 if gateway['rssi'] > best_rssi:
                     best_rssi = gateway['rssi']
                     best_gateway = gateway['gtw_id']
-                    best_snr = gateway['snr']
+                    best_snr = gateway.get('snr', 0)
                     best_received = gateway['time']
 
             # strip dev_eui from topic string
