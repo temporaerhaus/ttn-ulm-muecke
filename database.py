@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import base64
 import pymysql.cursors
 import time
 import config
