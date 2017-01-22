@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class Subscriber:
     client = None
     database = None
@@ -17,9 +18,9 @@ class Subscriber:
         self.client.connect_async('eu.thethings.network', 1883, 60)
 
     def on_connect(self, client, userdata, flags, rc):
-        print('connected')
+        #print('connected')
         subscribe_path = '+/devices/+/up'
-        print('subscribing to ' + subscribe_path)
+        print('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path)
         self.client.subscribe(subscribe_path)
 
     def on_message(self, client, userdata, msg):

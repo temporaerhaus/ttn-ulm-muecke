@@ -39,6 +39,11 @@ class Database:
             topic_splitted = mqtt_msg.topic.split('/')
             dev_eui = topic_splitted[2]
 
+            if 'payload_fields' in data:
+                payload_fields = json.dumps(data['payload_fields'])
+            else:
+                payload_fields = None
+
             sql = "INSERT INTO `data` (" \
                   "`app_id`, `dev_eui`," \
                   "`payload_raw`, `payload_fields`, `raw`," \
@@ -46,7 +51,7 @@ class Database:
                   "`created`) " \
                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(sql, (app_id, dev_eui,
-                                 data['payload_raw'], json.dumps(data['payload_fields']), json_raw,
+                                 data['payload_raw'], payload_fields, json_raw,
                                  best_rssi, best_snr, best_gateway, best_received,
                                  time.strftime('%Y-%m-%d %H:%M:%S')))
 
@@ -55,6 +60,13 @@ class Database:
     def get_applications(self):
         with self.connection.cursor() as cursor:
             sql = "SELECT * FROM `apps`"
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            return results
+
+    def get_application(self, app_id):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT * FROM `apps` WHERE id = " + str(app_id)
             cursor.execute(sql)
             results = cursor.fetchall()
             return results
