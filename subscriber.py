@@ -30,12 +30,12 @@ class Subscriber:
     def on_connect(self, client, userdata, flags, rc):
         #print('connected')
         subscribe_path = '+/devices/+/up'
-        print('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path)
+        print('[INFO] Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path)
         self.client.subscribe(subscribe_path)
 
     def on_message(self, client, userdata, msg):
         #print('got message')
-        print(msg.topic + " " + str(msg.payload))
+        print('[INFO] Message on topic ' + msg.topic + '\n' + str(msg.payload))
         self.database.save(self.app['id'], msg)
 
     def on_disconnect(self, client, userdata, rc):
