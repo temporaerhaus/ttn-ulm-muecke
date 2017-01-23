@@ -89,8 +89,5 @@ class Server:
         sys.exit(0)
 
 
-server = Server()
-
-#while True:
-#     dummy_event = threading.Event()
-#     dummy_event.wait()
+if __name__ == "__main__":
+    server = Server()
