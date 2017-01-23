@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
 from time import sleep
-import database
 from logger import Logger
 
 
@@ -49,8 +48,7 @@ class Subscriber:
             self.logger.log('Sleeping for ' + str(sleep_duration) + 's...', 'RECONNECT')
             sleep(sleep_duration)
 
-            db = database.Database()
-            self.app = db.get_application(self.id)
+            self.app = self.database.get_application(self.id)
             if self.app:
                 self.logger.log('Sleep finished. Got new app credentials. Retrying connection...', 'RECONNECT')
                 self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
