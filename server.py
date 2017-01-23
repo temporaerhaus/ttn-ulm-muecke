@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import signal
 import sys
-from time import strftime, gmtime
 import subscriber
 import database
 import paho.mqtt.client as mqtt
 import threading
+from logger import Logger
 
 
 class Server:
     db = None
+    logger = None
     current_apps = []
     mqtt_clients = {}
     new_apps = []
@@ -18,6 +19,7 @@ class Server:
 
     def __init__(self):
         self.db = database.Database()
+        self.logger = Logger()
 
         for app in self.db.get_applications():
             self.current_apps.append(app['id'])
@@ -30,7 +32,6 @@ class Server:
 
         # SIGINT
         signal.signal(signal.SIGINT, self.signal_handler)
-        print('Press Ctrl+C to quit')
         signal.pause()
 
     def subscribe_to_apps(self, apps):
@@ -46,8 +47,7 @@ class Server:
                 self.mqtt_clients[app_id] = client
 
     def reload(self):
-        now = strftime("%H:%M:%S", gmtime())
-        print('[TIMER] '+now+' Timer fired, checking new and old apps...')
+        self.logger.log('Timer fired, checking new and old apps...', 'TIMER')
         threading.Timer(self.reload_interval, self.reload).start()
 
         # get all current apps in db
@@ -67,20 +67,20 @@ class Server:
 
         # 1) unsubscribe from deleted apps
         if len(deleted_apps):
-            print('[TIMER] Old apps to unsubscribe found')
+            self.logger.log('Old apps to unsubscribe found', 'TIMER')
             for app_id in deleted_apps:
-                print('[TIMER] Unsubscribing from ' + str(app_id) + ' because this app was deleted')
+                self.logger.log('Unsubscribing from ' + str(app_id) + ' because this app was deleted', 'TIMER')
                 self.mqtt_clients[app_id].unsubscribe('+/devices/+/up')
                 self.mqtt_clients.pop(app_id, None)
         else:
-            print('[TIMER] No apps deleted since last interval')
+            self.logger.log('No apps deleted since last interval', 'TIMER')
 
         # 2) subscribe to all new apps
         if len(new_apps):
-            print('[TIMER] New apps found. Subscribing...')
+            self.logger.log('New apps found. Subscribing...', 'TIMER')
             self.subscribe_to_apps(new_apps)
         else:
-            print('[TIMER] No new apps found. Sleeping...')
+            self.logger.log('No new apps found. Sleeping...', 'TIMER')
 
         # Set all new and current apps as the new current apps, until the next interval
         self.current_apps = new_and_current_apps
