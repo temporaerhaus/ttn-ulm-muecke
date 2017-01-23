@@ -69,4 +69,4 @@ class Database:
             sql = "SELECT * FROM `apps` WHERE id = " + str(app_id)
             cursor.execute(sql)
             results = cursor.fetchall()
-            return results
+            return results[0]

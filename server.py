@@ -14,6 +14,8 @@ class Server:
     mqtt_clients = {}
     new_apps = []
 
+    reload_interval = 20.0
+
     def __init__(self):
         self.db = database.Database()
 
@@ -34,9 +36,11 @@ class Server:
     def subscribe_to_apps(self, apps):
         # code for the first run of then server to fetch and subscribe to all current apps
         for app_id in apps:
-            app_to_subscribe = self.db.get_application(app_id)[0]
+            app_to_subscribe = self.db.get_application(app_id)
             if app_to_subscribe:
-                client = mqtt.Client()
+                client = mqtt.Client(client_id='client'+str(app_id),
+                                     clean_session=False,
+                                     userdata=app_to_subscribe['app_id'])
                 sub = subscriber.Subscriber(self.db, app_to_subscribe, client)
                 client.loop_start()
                 self.mqtt_clients[app_id] = client
@@ -44,8 +48,7 @@ class Server:
     def reload(self):
         now = strftime("%H:%M:%S", gmtime())
         print('[TIMER] '+now+' Timer fired, checking new and old apps...')
-        reload_interval = 5.0
-        threading.Timer(reload_interval, self.reload).start()
+        threading.Timer(self.reload_interval, self.reload).start()
 
         # get all current apps in db
         apps_in_database = []
