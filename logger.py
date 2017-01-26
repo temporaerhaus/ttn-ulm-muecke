@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from time import strftime, gmtime
+from time import strftime, localtime
 
 
 class Logger:
@@ -9,5 +9,5 @@ class Logger:
         pass
 
     def log(self, msg, tag='INFO'):
-        now = strftime("%H:%M:%S", gmtime())
+        now = strftime("%H:%M:%S", localtime())
         print((now+' ' if self.with_time else '') + '['+tag+'] ' + msg)
