@@ -2,12 +2,13 @@
 import random
 from time import sleep
 from logger import Logger
+import database
 
 
 class Subscriber:
     logger = None
     client = None
-    database = None
+    db = None
     app = None
 
     failed_apps = {}
@@ -17,9 +18,9 @@ class Subscriber:
 
     log_with_payload = False
 
-    def __init__(self, database, app, client):
+    def __init__(self, app, client):
         self.logger = Logger()
-        self.database = database
+        self.db = database.Database()
         self.app = app
         self.id = app['id']
         self.client = client
@@ -38,7 +39,7 @@ class Subscriber:
 
     def on_message(self, client, userdata, msg):
         self.logger.log('Message on topic ' + msg.topic + (str('\n'+msg.payload) if self.log_with_payload else ''))
-        self.database.save(self.app['id'], msg)
+        self.db.save(self.app['id'], msg)
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
@@ -48,7 +49,7 @@ class Subscriber:
             self.logger.log('Sleeping for ' + str(sleep_duration) + 's...', 'RECONNECT')
             sleep(sleep_duration)
 
-            self.app = self.database.get_application(self.id)
+            self.app = self.db.get_application(self.id)
             if self.app:
                 self.logger.log('Sleep finished. Got new app credentials. Retrying connection...', 'RECONNECT')
                 self.client.username_pw_set(self.app['app_id'], self.app['app_key'])

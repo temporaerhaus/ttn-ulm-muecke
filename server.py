@@ -42,7 +42,7 @@ class Server:
                 client = mqtt.Client(client_id='client'+str(app_id),
                                      clean_session=False,
                                      userdata=app_to_subscribe['app_id'])
-                sub = subscriber.Subscriber(self.db, app_to_subscribe, client)
+                sub = subscriber.Subscriber(app_to_subscribe, client)
                 client.loop_start()
                 self.mqtt_clients[app_id] = client
 
