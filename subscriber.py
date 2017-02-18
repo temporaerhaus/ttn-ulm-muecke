@@ -3,6 +3,7 @@ import random
 from time import sleep
 from logger import Logger
 import database
+import json
 
 
 class Subscriber:
@@ -12,6 +13,11 @@ class Subscriber:
     app = None
 
     failed_apps = {}
+    handlers = {
+        '1': ('ttn-handler-eu', 'eu.thethings.network'),
+        '2': ('cortex-media (TTN Ulm)', 'ttn.cortex-media.de')
+    }
+    handler = handlers['1'][1]
 
     min_sleep_time = 10
     max_sleep_time = 60
@@ -30,11 +36,25 @@ class Subscriber:
         self.client.on_disconnect = self.on_disconnect
 
         self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
-        self.client.connect_async('eu.thethings.network', 1883, 60)
+
+        settings_raw = self.app['settings']
+        if settings_raw:
+            settings = json.loads(settings_raw)
+            if 'handler' in settings:
+                handler_id = settings['handler']
+                self.handler = self.handlers[handler_id][1]
+            else:
+                self.handler = self.handlers['1'][1]
+        else:
+            self.handler = self.handlers['1'][1]
+
+        #self.client.connect_async('eu.thethings.network', 1883, 60)
+        #self.client.connect_async('ttn.cortex-media.de', 1883, 60)
+        self.client.connect_async(self.handler, 1883, 60)
 
     def on_connect(self, client, userdata, flags, rc):
         subscribe_path = '+/devices/+/up'
-        self.logger.log('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path)
+        self.logger.log('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path + ' on hadler ' + self.handler)
         self.client.subscribe(subscribe_path)
 
     def on_message(self, client, userdata, msg):
@@ -53,5 +73,7 @@ class Subscriber:
             if self.app:
                 self.logger.log('Sleep finished. Got new app credentials. Retrying connection...', 'RECONNECT')
                 self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
-                self.client.connect_async('eu.thethings.network', 1883, 60)
+                #self.client.connect_async('eu.thethings.network', 1883, 60)
+                #self.client.connect_async('ttn.cortex-media.de', 1883, 60)
+                self.client.connect_async(self.handler, 1883, 60)
 
