@@ -48,8 +48,6 @@ class Subscriber:
         else:
             self.handler = self.handlers['1'][1]
 
-        #self.client.connect_async('eu.thethings.network', 1883, 60)
-        #self.client.connect_async('ttn.cortex-media.de', 1883, 60)
         self.client.connect_async(self.handler, 1883, 60)
 
     def on_connect(self, client, userdata, flags, rc):
@@ -73,7 +71,5 @@ class Subscriber:
             if self.app:
                 self.logger.log('Sleep finished. Got new app credentials. Retrying connection...', 'RECONNECT')
                 self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
-                #self.client.connect_async('eu.thethings.network', 1883, 60)
-                #self.client.connect_async('ttn.cortex-media.de', 1883, 60)
                 self.client.connect_async(self.handler, 1883, 60)
 
