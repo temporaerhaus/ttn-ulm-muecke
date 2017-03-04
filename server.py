@@ -63,6 +63,9 @@ class Server:
         # -> difference between new_and_current_apps and current_apps
         deleted_apps = set(self.current_apps).difference(new_and_current_apps)
 
+        # check for new access keys (dirty bit)
+        # TODO
+
         # start new subscribe, delete missing subscribes
 
         # 1) unsubscribe from deleted apps
@@ -84,6 +87,7 @@ class Server:
 
         # Set all new and current apps as the new current apps, until the next interval
         self.current_apps = new_and_current_apps
+
 
     def signal_handler(self, signal, frame):
         sys.exit(0)
