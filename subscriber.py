@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 import random
 from time import sleep
-from logger import Logger
-import database
 import json
+import importlib
+
+from logger import Logger
+import config
+import database
+import api
 
 
 class Subscriber:
     logger = None
     client = None
     db = None
+    api = None
     app = None
 
     failed_apps = {}
@@ -30,6 +35,7 @@ class Subscriber:
         self.app = app
         self.id = app['id']
         self.client = client
+        self.api = api.Api()
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -58,6 +64,13 @@ class Subscriber:
     def on_message(self, client, userdata, msg):
         self.logger.log('Message on topic ' + msg.topic + (str('\n'+msg.payload) if self.log_with_payload else ''))
         self.db.save(self.app['id'], msg)
+
+        # iterate over all tasks configured in the
+        # config and use the api to send it
+        for taskModule, taskClass in config.apitasks:
+            the_task = getattr(importlib.import_module(taskModule), taskClass)
+            the_task = the_task()
+            the_task.send(msg)
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:

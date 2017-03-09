@@ -88,10 +88,8 @@ class Server:
         # Set all new and current apps as the new current apps, until the next interval
         self.current_apps = new_and_current_apps
 
-
     def signal_handler(self, signal, frame):
         sys.exit(0)
-
 
 if __name__ == "__main__":
     server = Server()

@@ -28,12 +28,14 @@ class Database:
             best_gateway = ''
             best_snr = -1000
             best_received = ''
-            for gateway in data['metadata']['gateways']:
-                if gateway['rssi'] > best_rssi:
-                    best_rssi = gateway['rssi']
-                    best_gateway = gateway['gtw_id']
-                    best_snr = gateway.get('snr', 0)
-                    best_received = gateway['time']
+            # TODO: 'gateways' could be not exisiting
+            if 'gateways' in data['metadata']:
+                for gateway in data['metadata']['gateways']:
+                    if gateway['rssi'] > best_rssi:
+                        best_rssi = gateway['rssi']
+                        best_gateway = gateway['gtw_id']
+                        best_snr = gateway.get('snr', 0)
+                        best_received = gateway['time']
 
             # strip dev_eui from topic string
             topic_splitted = mqtt_msg.topic.split('/')
