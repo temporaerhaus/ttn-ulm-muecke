@@ -7,7 +7,6 @@ import importlib
 from logger import Logger
 import config
 import database
-import api
 
 
 class Subscriber:
