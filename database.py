@@ -52,10 +52,23 @@ class Database:
                   "`rssi`, `snr`, `gateway_eui`, `received`," \
                   "`created`) " \
                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+            cursor.execute("LOCK TABLES data WRITE, data_gateway WRITE")
             cursor.execute(sql, (app_id, dev_eui,
                                  data['payload_raw'], payload_fields, json_raw,
                                  best_rssi, best_snr, best_gateway, best_received,
                                  time.strftime('%Y-%m-%d %H:%M:%S')))
+            lastid = cursor.lastrowid
+            for gateway in data['metadata']['gateways']:
+                g_rssi = gateway['rssi']
+                g_gateway = gateway['gtw_id']
+                g_snr = gateway.get('snr', 0)
+                g_received = gateway['time']
+                snr = 0
+                received = 0
+                sql_gateway = "INSERT INTO data_gateway (id,gateway_eui,rssi,snr,received) values (%s,%s,%s,%s,%s)"
+                cursor.execute(sql_gateway, (lastid, g_gateway, g_rssi, g_snr, g_received))
+            cursor.execute("UNLOCK TABLES")
 
         self.connection.commit()
 
