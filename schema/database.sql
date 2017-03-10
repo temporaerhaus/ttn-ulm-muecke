@@ -1,3 +1,33 @@
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `password_reset` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(32) DEFAULT NULL,
+  `userid` int(11) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ix_password_reset_token` (`token`),
+  KEY `userid` (`userid`),
+  CONSTRAINT `password_reset_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `registration_confirm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(32) DEFAULT NULL,
+  `userid` int(11) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ix_registration_confirm_token` (`token`),
+  KEY `userid` (`userid`),
+  CONSTRAINT `registration_confirm_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) DEFAULT NULL,
@@ -37,32 +67,5 @@ CREATE TABLE `data_gateway` (
   KEY `gateway_eui` (`gateway_eui`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `password_reset` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(32) DEFAULT NULL,
-  `userid` int(11) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_password_reset_token` (`token`),
-  KEY `userid` (`userid`),
-  CONSTRAINT `password_reset_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `registration_confirm` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(32) DEFAULT NULL,
-  `userid` int(11) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ix_registration_confirm_token` (`token`),
-  KEY `userid` (`userid`),
-  CONSTRAINT `registration_confirm_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
