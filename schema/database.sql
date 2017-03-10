@@ -7,7 +7,7 @@ CREATE TABLE `apps` (
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   CONSTRAINT `apps_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -25,7 +25,7 @@ CREATE TABLE `data` (
   KEY `data_app_id_created_index` (`app_id`,`created`),
   KEY `gateway_eui` (`gateway_eui`),
   CONSTRAINT `data_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `apps` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=376518 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_gateway` (
   `id` int(11) NOT NULL,
@@ -65,4 +65,4 @@ CREATE TABLE `user` (
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
