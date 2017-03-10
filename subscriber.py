@@ -13,7 +13,6 @@ class Subscriber:
     logger = None
     client = None
     db = None
-    api = None
     app = None
 
     failed_apps = {}
@@ -34,7 +33,6 @@ class Subscriber:
         self.app = app
         self.id = app['id']
         self.client = client
-        self.api = api.Api()
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
