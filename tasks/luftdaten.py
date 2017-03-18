@@ -6,7 +6,8 @@ from tasks.apitask import APITask
 
 class LuftdatenTask(APITask):
     id_prefix = 'TTNUlm-'
-    api_endpoint = 'http://api.luftdaten.info/v1/push-sensor-data/'
+    api_endpoint = 'https://api.luftdaten.info/v1/push-sensor-data/'
+    api_madavi_endpoint = 'https://api-rrd.madavi.de/data.php'
 
     def __init__(self):
         APITask.__init__(self)
@@ -43,6 +44,7 @@ class LuftdatenTask(APITask):
             ]
         }
         r = requests.post(self.api_endpoint, json=postdata, headers=headers)
+        r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
 
         # ***************************
         # Temp/Hum (DHT)
@@ -59,3 +61,4 @@ class LuftdatenTask(APITask):
             ]
         }
         r = requests.post(self.api_endpoint, json=postdata, headers=headers)
+        r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
