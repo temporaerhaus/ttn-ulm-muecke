@@ -2,14 +2,17 @@
 import json
 import requests
 from tasks.apitask import APITask
+from logger import Logger
 
 
 class LuftdatenTask(APITask):
+    logger = None
     id_prefix = 'TTNUlm-'
     api_endpoint = 'https://api.luftdaten.info/v1/push-sensor-data/'
     api_madavi_endpoint = 'https://api-rrd.madavi.de/data.php'
 
     def __init__(self):
+        self.logger = Logger()
         APITask.__init__(self)
 
     def send(self, mqtt_msg):
@@ -43,8 +46,12 @@ class LuftdatenTask(APITask):
                 {'value_type': 'P2', 'value': str(payload_fields['pm25'])}   # PM2.5
             ]
         }
-        r = requests.post(self.api_endpoint, json=postdata, headers=headers)
-        r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
+        try:
+            r = requests.post(self.api_endpoint, json=postdata, headers=headers)
+            r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
+        except requests.ConnectionError as e:
+            self.logger.log('Connection error: ' + e.message, tag='ERROR')
+            self.logger.log('({0}): {1}'.format(e.errno, e.strerror, tag='ERROR'))
 
         # ***************************
         # Temp/Hum (DHT)
@@ -60,5 +67,9 @@ class LuftdatenTask(APITask):
                 {'value_type': 'humidity', 'value': str(payload_fields['humidity'])},
             ]
         }
-        r = requests.post(self.api_endpoint, json=postdata, headers=headers)
-        r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
+        try:
+            r = requests.post(self.api_endpoint, json=postdata, headers=headers)
+            r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
+        except requests.ConnectionError as e:
+            self.logger.log('Connection error: ' + e.message, tag='ERROR')
+            self.logger.log('({0}): {1}'.format(e.errno, e.strerror, tag='ERROR'))
