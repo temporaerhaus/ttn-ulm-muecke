@@ -50,8 +50,9 @@ class LuftdatenTask(APITask):
             r = requests.post(self.api_endpoint, json=postdata, headers=headers)
             r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
         except requests.ConnectionError as e:
-            self.logger.log('Connection error: ' + e.message, tag='ERROR')
-            self.logger.log('({0}): {1}'.format(e.errno, e.strerror, tag='ERROR'))
+            self.logger.log('Connection error: ' + str(e), tag='ERROR')
+        except Exception, e:
+            self.logger.log('Error: ' + str(e), tag='ERROR')
 
         # ***************************
         # Temp/Hum (DHT)
@@ -70,6 +71,7 @@ class LuftdatenTask(APITask):
         try:
             r = requests.post(self.api_endpoint, json=postdata, headers=headers)
             r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
-        except requests.ConnectionError as e:
-            self.logger.log('Connection error: ' + e.message, tag='ERROR')
-            self.logger.log('({0}): {1}'.format(e.errno, e.strerror, tag='ERROR'))
+        except requests.ConnectionError, e:
+            self.logger.log('Connection error: ' + str(e), tag='ERROR')
+        except Exception, e:
+            self.logger.log('Error: ' + str(e), tag='ERROR')
