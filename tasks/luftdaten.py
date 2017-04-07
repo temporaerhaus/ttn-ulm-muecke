@@ -51,7 +51,7 @@ class LuftdatenTask(APITask):
             r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
         except requests.ConnectionError as e:
             self.logger.log('Connection error: ' + str(e), tag='ERROR')
-        except Exception, e:
+        except Exception as e:
             self.logger.log('Error: ' + str(e), tag='ERROR')
 
         # ***************************
@@ -71,7 +71,7 @@ class LuftdatenTask(APITask):
         try:
             r = requests.post(self.api_endpoint, json=postdata, headers=headers)
             r = requests.post(self.api_madavi_endpoint, json=postdata, headers=headers)
-        except requests.ConnectionError, e:
+        except requests.ConnectionError as e:
             self.logger.log('Connection error: ' + str(e), tag='ERROR')
-        except Exception, e:
+        except Exception as e:
             self.logger.log('Error: ' + str(e), tag='ERROR')
