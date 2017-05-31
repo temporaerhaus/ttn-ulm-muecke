@@ -14,5 +14,11 @@ main = dict(
 
 # active api tasks
 apitasks = [
-    ('tasks.luftdaten', 'LuftdatenTask')
+    #('tasks.luftdaten', 'LuftdatenTask')
+]
+
+# active db tasks
+dbtasks = [
+    ('tasks.dbtask', 'DBTask'),
+    #('tasks.influx', 'InfluxDBTask'),
 ]

@@ -22,8 +22,8 @@ class Subscriber:
     }
     handler = handlers['1'][1]
 
-    min_sleep_time = 10
-    max_sleep_time = 60
+    min_sleep_time = 5
+    max_sleep_time = 20
 
     log_with_payload = False
 
@@ -60,7 +60,6 @@ class Subscriber:
 
     def on_message(self, client, userdata, msg):
         self.logger.log('Message on topic ' + msg.topic + (str('\n'+msg.payload) if self.log_with_payload else ''))
-        self.db.save(self.app['id'], msg)
 
         # iterate over all tasks configured in the
         # config and use the api to send it
@@ -68,6 +67,12 @@ class Subscriber:
             the_task = getattr(importlib.import_module(taskModule), taskClass)
             the_task = the_task()
             the_task.send(msg)
+
+        # db tasks
+        for taskModule, taskClass in config.dbtasks:
+            the_task = getattr(importlib.import_module(taskModule), taskClass)
+            the_task = the_task()
+            the_task.save(self.app['id'], msg)
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:

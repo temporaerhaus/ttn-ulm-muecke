@@ -8,6 +8,7 @@ will subscribe or unsubscribe from this MQTT stream.
 ## Dependencies
 * paho-mqtt
 * PyMySQL
+* influxdb
 * requests
 
 It's only tested with Python 3. Could work on Python 2, but I don't know :)
