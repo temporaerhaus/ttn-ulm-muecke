@@ -54,7 +54,7 @@ class Subscriber:
 
     def on_connect(self, client, userdata, flags, rc):
         subscribe_path = '+/devices/+/up'
-        self.logger.log('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path + ' on hadler ' + self.handler)
+        self.logger.log('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path + ' on handler ' + self.handler)
         self.client.subscribe(subscribe_path)
 
     def on_message(self, client, userdata, msg):
