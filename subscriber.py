@@ -66,12 +66,14 @@ class Subscriber:
             the_task = getattr(importlib.import_module(taskModule), taskClass)
             the_task = the_task()
             the_task.send(msg)
+            del the_task
 
         # db tasks
         for taskModule, taskClass in config.dbtasks:
             the_task = getattr(importlib.import_module(taskModule), taskClass)
             the_task = the_task()
             the_task.save(self.app['id'], msg)
+            del the_task #not sure yet if this makes sense or is GC'ed anyway
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
