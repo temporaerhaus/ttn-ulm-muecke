@@ -3,7 +3,6 @@ import random
 from time import sleep
 import json
 import importlib
-
 from logger import Logger
 import config
 import database

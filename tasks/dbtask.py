@@ -5,6 +5,7 @@ import time
 import config
 import json
 import threading
+import helper.mysqlconn
 
 
 class DBTask:
@@ -13,19 +14,9 @@ class DBTask:
 
     def __init__(self):
         self.logger = Logger()
-        self.connect()
-
+        self.connection = helper.mysqlconn.get_connection()
         # ping the database every x seconds
         timer = self.set_interval(self.ping, 30 * 60)
-
-    def connect(self):
-        self.connection = pymysql.connect(
-            host=config.database['host'],
-            user=config.database['user'],
-            password=config.database['password'],
-            db=config.database['database'],
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor)
 
     def save(self, app_id, mqtt_msg):
         with self.connection.cursor() as cursor:
@@ -81,20 +72,6 @@ class DBTask:
             cursor.execute("UNLOCK TABLES")
 
         self.connection.commit()
-
-    def get_applications(self):
-        with self.connection.cursor() as cursor:
-            sql = "SELECT * FROM `apps`"
-            cursor.execute(sql)
-            results = cursor.fetchall()
-            return results
-
-    def get_application(self, app_id):
-        with self.connection.cursor() as cursor:
-            sql = "SELECT * FROM `apps` WHERE id = " + str(app_id)
-            cursor.execute(sql)
-            results = cursor.fetchall()
-            return results[0]
 
     def ping(self):
         with self.connection.cursor() as cursor:
