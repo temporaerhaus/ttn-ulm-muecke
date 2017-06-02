@@ -5,18 +5,21 @@ import time
 import config
 import json
 import threading
-import helper.mysqlconn
 
 
 class DBTask:
     logger = None
     connection = None
 
-    def __init__(self):
+    def __init__(self, connection):
         self.logger = Logger()
-        self.connection = helper.mysqlconn.get_connection()
+        self.connection = connection
         # ping the database every x seconds
         timer = self.set_interval(self.ping, 30 * 60)
+
+    @staticmethod
+    def get_type():
+        return 1
 
     def save(self, app_id, mqtt_msg):
         with self.connection.cursor() as cursor:

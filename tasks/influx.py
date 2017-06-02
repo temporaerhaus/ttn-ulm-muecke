@@ -12,6 +12,10 @@ class InfluxDBTask(DBTask):
         self.logger = Logger()
         DBTask.__init__(self)
 
+    @staticmethod
+    def get_type():
+        return 2
+
     def save(self, app_id, mqtt_msg):
         self.logger.log('Executing Influx task...', 'TASK-INFLUX')
         json_raw = mqtt_msg.payload.decode("utf-8")

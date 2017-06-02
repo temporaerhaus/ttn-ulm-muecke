@@ -22,6 +22,9 @@ class Database:
             cursorclass=pymysql.cursors.DictCursor)
         self.logger.log('Connected.', 'MYSQL')
 
+    def get_connection(self):
+        return self.connection
+
     def get_applications(self):
         with self.connection.cursor() as cursor:
             sql = "SELECT * FROM `apps`"
