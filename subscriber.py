@@ -6,6 +6,7 @@ import importlib
 from logger import Logger
 import config
 import database
+import threading
 
 
 class Subscriber:
@@ -52,6 +53,10 @@ class Subscriber:
 
         self.client.connect_async(self.handler, 1883, 60)
 
+        # ping the database every x seconds
+        # TODO: ist das das threading problem?
+        timer = self.set_interval(self.db.ping, 30 * 60)
+
     def on_connect(self, client, userdata, flags, rc):
         subscribe_path = '+/devices/+/up'
         self.logger.log('Subscribing to app '+self.app['app_id']+' on topic ' + subscribe_path + ' on handler ' + self.handler)
@@ -66,13 +71,15 @@ class Subscriber:
             the_task = getattr(importlib.import_module(taskModule), taskClass)
             the_task = the_task()
             the_task.send(msg)
+            the_task.close()
             del the_task
 
         # db tasks
         for taskModule, taskClass in config.dbtasks:
             the_task = getattr(importlib.import_module(taskModule), taskClass)
-            the_task = the_task(self.db.get_connection())
+            the_task = the_task()
             the_task.save(self.app['id'], msg)
+            the_task.close()
             del the_task #not sure yet if this makes sense or is GC'ed anyway
 
     def on_disconnect(self, client, userdata, rc):
@@ -89,3 +96,11 @@ class Subscriber:
                 self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
                 self.client.connect_async(self.handler, 1883, 60)
 
+    def set_interval(self, func, sec):
+        def func_wrapper():
+            self.set_interval(func, sec)
+            func()
+
+        t = threading.Timer(sec, func_wrapper)
+        t.start()
+        return t

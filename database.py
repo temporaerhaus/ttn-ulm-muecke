@@ -38,3 +38,8 @@ class Database:
             cursor.execute(sql)
             results = cursor.fetchall()
             return results[0]
+
+    def ping(self):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT 1"
+            cursor.execute(sql)

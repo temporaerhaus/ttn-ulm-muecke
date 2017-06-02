@@ -12,10 +12,6 @@ class InfluxDBTask(DBTask):
         self.logger = Logger()
         DBTask.__init__(self)
 
-    @staticmethod
-    def get_type():
-        return 2
-
     def save(self, app_id, mqtt_msg):
         self.logger.log('Executing Influx task...', 'TASK-INFLUX')
         json_raw = mqtt_msg.payload.decode("utf-8")
@@ -33,7 +29,6 @@ class InfluxDBTask(DBTask):
         }
         ]
 
-
         device_eui = int(data['hardware_serial'], 16)
 
         #client = InfluxDBClient('localhost', 8086, 'muecke', 'muecke', 'muecke')
@@ -43,3 +38,6 @@ class InfluxDBTask(DBTask):
         #result = client.query('select value from cpu_load_short;')
         #print("Result: {0}".format(result))
 
+    def close(self):
+        # TODO close influx connection?
+        pass

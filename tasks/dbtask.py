@@ -4,22 +4,24 @@ import pymysql.cursors
 import time
 import config
 import json
-import threading
 
 
 class DBTask:
     logger = None
     connection = None
 
-    def __init__(self, connection):
+    def __init__(self):
         self.logger = Logger()
-        self.connection = connection
-        # ping the database every x seconds
-        timer = self.set_interval(self.ping, 30 * 60)
+        self.connect()
 
-    @staticmethod
-    def get_type():
-        return 1
+    def connect(self):
+        self.connection = pymysql.connect(
+            host=config.database['host'],
+            user=config.database['user'],
+            password=config.database['password'],
+            db=config.database['database'],
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor)
 
     def save(self, app_id, mqtt_msg):
         with self.connection.cursor() as cursor:
@@ -76,15 +78,5 @@ class DBTask:
 
         self.connection.commit()
 
-    def ping(self):
-        with self.connection.cursor() as cursor:
-            sql = "SELECT 1"
-            cursor.execute(sql)
-
-    def set_interval(self, func, sec):
-        def func_wrapper():
-            self.set_interval(func, sec)
-            func()
-        t = threading.Timer(sec, func_wrapper)
-        t.start()
-        return t
+    def close(self):
+        self.connection.close()
