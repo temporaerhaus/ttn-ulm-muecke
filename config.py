@@ -6,6 +6,14 @@ database = dict(
     password='muecke'
 )
 
+influxdb = dict(
+    host='localhost',
+    port=8086,
+    database='muecke',
+    user='muecke',
+    password='muecke'
+)
+
 main = dict(
     save_to_db=True,
     send_to_api=True,
@@ -20,5 +28,5 @@ apitasks = [
 # active db tasks
 dbtasks = [
     ('tasks.dbtask', 'DBTask'),
-    #('tasks.influx', 'InfluxDBTask'),
+    ('tasks.influx', 'InfluxDBTask'),
 ]

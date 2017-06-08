@@ -3,6 +3,7 @@ import json
 from tasks.dbtask import DBTask
 from logger import Logger
 from influxdb import InfluxDBClient
+import config
 
 
 class InfluxDBTask(DBTask):
@@ -63,7 +64,13 @@ class InfluxDBTask(DBTask):
             }
         }]
 
-        client = InfluxDBClient('localhost', 8086, 'muecke', 'muecke', 'muecke')
+        client = InfluxDBClient(
+            config.influxdb['host'],
+            config.influxdb['port'],
+            config.influxdb['user'],
+            config.influxdb['password'],
+            config.influxdb['database']
+        )
         self.logger.log('Saving JSON payload to InfluxDB.')
         client.write_points(influx_json)
 
