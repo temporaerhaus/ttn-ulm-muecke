@@ -25,6 +25,15 @@ class DBTask:
 
     def save(self, app_id, mqtt_msg):
         with self.connection.cursor() as cursor:
+            try:
+                pass
+            except pymysql.err.OperationalError as e:
+                if 2000 <= e[0] <= 2010:
+                    self.logger.log('DB error while trying to save dbtask to mysql. Reconnecting...', 'MYSQL')
+                    self.connect()
+                else:
+                    raise
+
             self.logger.log('Saving message to DB...', 'TASK-MYSQL')
             json_raw = mqtt_msg.payload.decode("utf-8")
             data = json.loads(json_raw)

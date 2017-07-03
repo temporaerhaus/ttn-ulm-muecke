@@ -5,6 +5,8 @@ import subscriber
 import database
 import paho.mqtt.client as mqtt
 import threading
+import random
+import string
 from logger import Logger
 
 
@@ -39,7 +41,9 @@ class Server:
         for app_id in apps:
             app_to_subscribe = self.db.get_application(app_id)
             if app_to_subscribe:
-                client = mqtt.Client(client_id='client'+str(app_id),
+                # looks like we get random disconnects from other instances if this id  is not unique
+                random_chars = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+                client = mqtt.Client(client_id='client'+str(app_id)+random_chars,
                                      clean_session=False,
                                      userdata=app_to_subscribe['app_id'])
                 sub = subscriber.Subscriber(app_to_subscribe, client)

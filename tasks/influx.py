@@ -64,6 +64,12 @@ class InfluxDBTask(DBTask):
             }
         }]
 
+        # add all custom fields
+        if 'payload_fields' in data:
+            self.logger.log(str(data['payload_fields']), 'INFO')
+            for key, value in data['payload_fields'].items():
+                influx_json[0]['fields'][key] = value
+
         client = InfluxDBClient(
             config.influxdb['host'],
             config.influxdb['port'],

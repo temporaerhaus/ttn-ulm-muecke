@@ -54,8 +54,7 @@ class Subscriber:
         self.client.connect_async(self.handler, 1883, 60)
 
         # ping the database every x seconds
-        # TODO: ist das das threading problem?
-        timer = self.set_interval(self.db.ping, 30 * 60)
+        timer = self.set_interval(self.db.ping_native, 60)
 
     def on_connect(self, client, userdata, flags, rc):
         subscribe_path = '+/devices/+/up'
@@ -84,7 +83,7 @@ class Subscriber:
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
-            self.logger.log('Unexcepted disconnect from app ' + str(userdata), 'RECONNECT')
+            self.logger.log('Unexcepted disconnect from app ' + str(userdata) + '. Reason: ' + str(rc), 'RECONNECT')
             random.seed()
             sleep_duration = random.randint(self.min_sleep_time, self.max_sleep_time)
             self.logger.log('Sleeping for ' + str(sleep_duration) + 's...', 'RECONNECT')

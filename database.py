@@ -39,7 +39,11 @@ class Database:
             results = cursor.fetchall()
             return results[0]
 
-    def ping(self):
+    def ping_native(self):
+        self.logger.log('Pinging MYSQL.... (native)', 'MYSQL')
+        self.connection.ping(True)
+
+    def ping_alive(self):
         with self.connection.cursor() as cursor:
             sql = "SELECT 1"
             cursor.execute(sql)
