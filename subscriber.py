@@ -54,7 +54,7 @@ class Subscriber:
         self.client.connect_async(self.handler, 1883, 60)
 
         # ping the database every x seconds
-        timer = self.set_interval(self.db.ping_native, 60)
+        timer = self.set_interval(self.db.ping_native, 60*15)
 
     def on_connect(self, client, userdata, flags, rc):
         subscribe_path = '+/devices/+/up'
