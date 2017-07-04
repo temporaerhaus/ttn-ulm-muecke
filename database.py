@@ -39,6 +39,19 @@ class Database:
             results = cursor.fetchall()
             return results[0]
 
+    def add_application(self, app_id, key, handler):
+        with self.connection.cursor() as cursor:
+            sql = "INSERT INTO apps (app_id, app_key, handler, userid) " \
+                  "VALUES ('{0}', '{1}', '{2}', 2)".format(app_id, key, handler)
+            cursor.execute(sql)
+            self.connection.commit()
+
+    def delete_application(self, app_id, key):
+        with self.connection.cursor() as cursor:
+            sql = "DELETE FROM apps WHERE app_id = '{0}' AND key = '{1}'".format(app_id, key)
+            cursor.execute(sql)
+            self.connection.commit()
+
     def ping_native(self):
         self.logger.log('Pinging MYSQL.... (native)', 'MYSQL')
         self.connection.ping(True)
