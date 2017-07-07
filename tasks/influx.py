@@ -68,7 +68,11 @@ class InfluxDBTask(DBTask):
         if 'payload_fields' in data:
             self.logger.log(str(data['payload_fields']), 'INFO')
             for key, value in data['payload_fields'].items():
-                influx_json[0]['fields'][key] = value
+                try:
+                    floated_value = float(value)
+                    influx_json[0]['fields'][key] = floated_value
+                except ValueError:
+                    influx_json[0]['fields'][key] = value
 
         client = InfluxDBClient(
             config.influxdb['host'],
