@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
 from time import sleep
-import json
 import importlib
 from logger import Logger
 import config
@@ -17,8 +16,8 @@ class Subscriber:
 
     failed_apps = {}
     handlers = {
-        '1': ('ttn-handler-eu', 'eu.thethings.network'),
-        '2': ('cortex-media (TTN Ulm)', 'ttn.cortex-media.de')
+        '1': ('ttn-handler-eu (TTN)', 'eu.thethings.network'),
+        '2': ('Cortex Media (TTN Ulm)', 'ttn.cortex-media.de')
     }
     handler = handlers['1'][1]
 
@@ -40,17 +39,13 @@ class Subscriber:
 
         self.client.username_pw_set(self.app['app_id'], self.app['app_key'])
 
-        settings_raw = self.app['settings']
-        if settings_raw:
-            settings = json.loads(settings_raw)
-            if 'handler' in settings:
-                handler_id = settings['handler']
-                self.handler = self.handlers[handler_id][1]
-            else:
-                self.handler = self.handlers['1'][1]
+        if self.app['handler']:
+            self.handler = self.app['handler']
         else:
-            self.handler = self.handlers['1'][1]
+            self.handler = self.handlers['1'][0]
 
+        #self.client.tls_set('certs/ca.pem')
+        #self.client.tls_insecure_set(True)
         self.client.connect_async(self.handler, 1883, 60)
 
         # ping the database every x seconds
@@ -79,7 +74,7 @@ class Subscriber:
             the_task = the_task()
             the_task.save(self.app['id'], msg)
             the_task.close()
-            del the_task #not sure yet if this makes sense or is GC'ed anyway
+            del the_task # not sure yet if this makes sense or is GC'ed anyway
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
