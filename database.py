@@ -40,8 +40,8 @@ class Database:
 
     def add_application(self, app_id, key, handler):
         with self.connection.cursor() as cursor:
-            sql = "INSERT INTO apps (app_id, app_key, handler, userid) " \
-                  "VALUES ('{0}', '{1}', '{2}', 2)".format(app_id, key, handler)
+            sql = "INSERT INTO apps (app_id, app_key, handler) " \
+                  "VALUES ('{0}', '{1}', '{2}')".format(app_id, key, handler)
             cursor.execute(sql)
             self.connection.commit()
 
