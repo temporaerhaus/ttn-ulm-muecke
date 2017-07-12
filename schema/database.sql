@@ -21,7 +21,7 @@ CREATE TABLE `data` (
   PRIMARY KEY (`id`),
   KEY `data_app_id_created_index` (`app_id`,`created`),
   KEY `gateway_eui` (`gateway_eui`),
-  CONSTRAINT `data_ibfk_1` FOREIGN KEY (`app_ id`) REFERENCES `apps` (`id`)
+  CONSTRAINT `data_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `apps` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_gateway` (
