@@ -20,7 +20,6 @@ class Database:
             db=config.database['database'],
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor)
-        self.logger.log('Connected.', 'MYSQL')
 
     def get_connection(self):
         return self.connection
