@@ -1,16 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
 import database
 
-# command line tool for adding/changing/deleting apps
-# TODO: add app, delete app, change access key, list all apps
-
 parser = argparse.ArgumentParser(description='Add or delete an app')
 
-parser.add_argument('action', choices=['add', 'delete'])
-parser.add_argument('--app-id', '-a', dest='appid', required=True)
-parser.add_argument('--key', '-k', dest='key', required=True)
+parser.add_argument('action', choices=['add', 'delete', 'list'])
+parser.add_argument('--appid', '-a', dest='appid')
+parser.add_argument('--key', '-k', dest='key')
 parser.add_argument('--handler', '-u', dest='handler')
 
 args = parser.parse_args()
@@ -22,4 +19,8 @@ if args.action == 'add':
 elif args.action == 'delete':
     db.delete_application(args.appid, args.key)
     print("Deleted")
+elif args.action == 'list':
+    apps = db.get_applications()
+    for app in apps:
+        print("App: {0:24} Handler: {1}".format(app['app_id'], app['handler']))
 
